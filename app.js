@@ -47,7 +47,7 @@ import { diffMinutes, delay } from "./utils.js";
       [
         "棉花採集作業中...",
         ...keywords.map(
-          (keyword) => `• ${keyword.text.slice(1)} x${keyword.times}`,
+          (keyword) => `• ${keyword.text.slice(1)} x ${keyword.times}`,
         ),
       ].join("\n"),
     );
