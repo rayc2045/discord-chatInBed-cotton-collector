@@ -30,6 +30,7 @@ import { diffMinutes, delay } from "./utils.js";
     { text: "+整理衣櫃", coolMinute: 120 },
     { text: "+歸納物品", coolMinute: 120 },
   ];
+  for (const keyword of keywords) keyword.times = 0;
 
   const sendText = async (text) => {
     const selector = "form [data-slate-node]";
@@ -38,6 +39,18 @@ import { diffMinutes, delay } from "./utils.js";
     await textarea.click();
     await textarea.type(text);
     await page.keyboard.press("Enter");
+  };
+
+  const updateLog = () => {
+    console.clear();
+    console.log(
+      [
+        "棉花採集作業中...",
+        ...keywords.map(
+          (keyword) => `• ${keyword.text.slice(1)} x${keyword.times}`,
+        ),
+      ].join("\n"),
+    );
   };
 
   const 開始賺棉花 = async () => {
@@ -55,16 +68,17 @@ import { diffMinutes, delay } from "./utils.js";
       }
 
       await sendText(text);
+      keyword.times++;
       keyword.lastTime = new Date();
+      updateLog();
       await delay(2);
     }
     await delay(60, 開始賺棉花);
   };
 
   await page.goto(棉棉摸彩箱區);
-  await delay(10); // for logging
+  await delay(15); // for logging
   await 開始賺棉花();
-  console.log("棉花採集作業中...");
 
   // // Locate the full title with a unique string.
   // const textSelector = await page
