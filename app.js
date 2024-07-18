@@ -19,7 +19,7 @@ import { diffMinutes, delay } from "./utils.js";
     棉棉摸彩箱區 = 蓋棉被純聊天頻道 + "1151829793654980639";
 
   const keywords = [
-    { text: "!摸彩", coolMinute: 24 },
+    { text: "!摸彩", coolMinute: 25 },
     { text: "+吸塵", coolMinute: 30 },
     { text: "+拖地", coolMinute: 30 },
     { text: "+點香氛", coolMinute: 30 },
