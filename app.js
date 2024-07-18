@@ -54,30 +54,36 @@ import { diffMinutes, delay } from "./utils.js";
   };
 
   const 開始賺棉花 = async () => {
-    for (const keyword of keywords) {
-      const { text, coolMinute, lastTime } = keyword;
+    try {
+      for (const keyword of keywords) {
+        const { text, coolMinute, lastTime } = keyword;
 
-      if (lastTime && diffMinutes(lastTime, new Date()) < coolMinute + 5)
-        continue;
+        if (lastTime && diffMinutes(lastTime, new Date()) < coolMinute + 5)
+          continue;
 
-      const href = await page.evaluate(() => location.href);
-      if (text.startsWith("!") && href !== 棉棉摸彩箱區) {
-        await page.goto(棉棉摸彩箱區);
-      } else if (text.startsWith("+") && href !== 勞動賺棉花區) {
-        await page.goto(勞動賺棉花區);
+        const href = await page.evaluate(() => location.href);
+        if (text.startsWith("!") && href !== 棉棉摸彩箱區) {
+          await page.goto(棉棉摸彩箱區);
+        } else if (text.startsWith("+") && href !== 勞動賺棉花區) {
+          await page.goto(勞動賺棉花區);
+        }
+
+        await sendText(text);
+        keyword.times++;
+        keyword.lastTime = new Date();
+        updateLog();
+        await delay(2);
       }
-
-      await sendText(text);
-      keyword.times++;
-      keyword.lastTime = new Date();
-      updateLog();
-      await delay(2);
+      await delay(60, 開始賺棉花);
+    } catch (err) {
+      console.clear();
+      console.log(err);
+      console.log("\n等待恢復棉花採集作業...");
+      await delay(15, 開始賺棉花);
     }
-    await delay(60, 開始賺棉花);
   };
 
   await page.goto(棉棉摸彩箱區);
-  await delay(15); // for logging
   await 開始賺棉花();
 
   // // Locate the full title with a unique string.
