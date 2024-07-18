@@ -1,4 +1,11 @@
 {
+  "name": "discord-chatInBed-cotton-collector",
+  "author": "Ray C",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
   "type": "module",
   "dependencies": {
     "puppeteer-core": "^22.13.0"
