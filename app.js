@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer-core";
-import { diffMinutes, delay } from "./utils.js";
+import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -19,16 +19,16 @@ import { diffMinutes, delay } from "./utils.js";
     棉棉摸彩箱區 = 蓋棉被純聊天頻道 + "1151829793654980639";
 
   const keywords = [
-    { text: "!摸彩", coolMinute: 25 },
-    { text: "+吸塵", coolMinute: 30 },
-    { text: "+拖地", coolMinute: 30 },
-    { text: "+點香氛", coolMinute: 30 },
-    { text: "+擦桌面", coolMinute: 60 },
-    { text: "+抹玻璃", coolMinute: 60 },
-    { text: "+洗廁所", coolMinute: 60 },
-    { text: "+換床單", coolMinute: 60 },
-    { text: "+整理衣櫃", coolMinute: 120 },
-    { text: "+歸納物品", coolMinute: 120 },
+    { text: "!摸彩", number: 50, coolMinute: 25 },
+    { text: "+吸塵", number: 10, coolMinute: 30 },
+    { text: "+拖地", number: 10, coolMinute: 30 },
+    { text: "+點香氛", number: 10, coolMinute: 30 },
+    { text: "+擦桌面", number: 20, coolMinute: 60 },
+    { text: "+抹玻璃", number: 20, coolMinute: 60 },
+    { text: "+洗廁所", number: 20, coolMinute: 60 },
+    { text: "+換床單", number: 20, coolMinute: 60 },
+    { text: "+整理衣櫃", number: 30, coolMinute: 120 },
+    { text: "+歸納物品", number: 30, coolMinute: 120 },
   ];
   for (const keyword of keywords) keyword.times = 0;
 
@@ -42,15 +42,15 @@ import { diffMinutes, delay } from "./utils.js";
   };
 
   const updateLog = () => {
+    const sum = keywords.reduce((acc, obj) => acc + obj.number * obj.times, 0),
+      paragraph = [
+        `棉花採集作業中... (≈${thousandFormat(sum)})`,
+        ...keywords
+          .filter((keyword) => keyword.times > 0)
+          .map((keyword) => `• ${keyword.text.slice(1)} x ${keyword.times}`),
+      ].join("\n");
     console.clear();
-    console.log(
-      [
-        "棉花採集作業中...",
-        ...keywords.map(
-          (keyword) => `• ${keyword.text.slice(1)} x ${keyword.times}`,
-        ),
-      ].join("\n"),
-    );
+    console.log(paragraph);
   };
 
   const 開始賺棉花 = async () => {

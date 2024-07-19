@@ -1,3 +1,9 @@
+export function thousandFormat(num) {
+  const parts = num.toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return parts.join(".");
+}
+
 export function diffMinutes(time1, time2) {
   return Math.floor(Math.abs(time1 - time2) / 1000 / 60);
 }
