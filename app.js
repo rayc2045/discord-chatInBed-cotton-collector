@@ -19,16 +19,16 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     棉棉摸彩箱區 = 蓋棉被純聊天頻道 + "1151829793654980639";
 
   const keywords = [
-    { text: "!摸彩", number: 50, coolMinute: 25 },
-    { text: "+吸塵", number: 10, coolMinute: 30 },
-    { text: "+拖地", number: 10, coolMinute: 30 },
-    { text: "+點香氛", number: 10, coolMinute: 30 },
-    { text: "+擦桌面", number: 20, coolMinute: 60 },
-    { text: "+抹玻璃", number: 20, coolMinute: 60 },
-    { text: "+洗廁所", number: 20, coolMinute: 60 },
-    { text: "+換床單", number: 20, coolMinute: 60 },
-    { text: "+整理衣櫃", number: 30, coolMinute: 120 },
-    { text: "+歸納物品", number: 30, coolMinute: 120 },
+    { text: "!摸彩", number: 50, coolMinute: 25, area: 棉棉摸彩箱區 },
+    { text: "+吸塵", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
+    { text: "+拖地", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
+    { text: "+點香氛", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
+    { text: "+擦桌面", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
+    { text: "+抹玻璃", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
+    { text: "+洗廁所", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
+    { text: "+換床單", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
+    { text: "+整理衣櫃", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
+    { text: "+歸納物品", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
   ];
   for (const keyword of keywords) keyword.times = 0;
 
@@ -53,38 +53,42 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     console.log(paragraph);
   };
 
-  const 開始賺棉花 = async () => {
+  const startCollectingCotton = async () => {
     try {
+      let triggerTimesInMinute = 0;
+      const triggerDelay = 2;
+
       for (const keyword of keywords) {
-        const { text, coolMinute, lastTime } = keyword;
+        const { text, coolMinute, lastTime, area } = keyword;
 
         if (lastTime && diffMinutes(lastTime, new Date()) < coolMinute + 5)
           continue;
 
         const href = await page.evaluate(() => location.href);
-        if (text.startsWith("!") && href !== 棉棉摸彩箱區) {
-          await page.goto(棉棉摸彩箱區);
-        } else if (text.startsWith("+") && href !== 勞動賺棉花區) {
-          await page.goto(勞動賺棉花區);
-        }
+        if (href !== area) await page.goto(area);
 
         await sendText(text);
         keyword.times++;
         keyword.lastTime = new Date();
+        triggerTimesInMinute++;
         updateLog();
-        await delay(2);
+        await delay(triggerDelay);
       }
-      await delay(60, 開始賺棉花);
+
+      await delay(
+        60 - triggerTimesInMinute * triggerDelay,
+        startCollectingCotton,
+      );
     } catch (err) {
       console.clear();
       console.log(err);
       console.log("\n等待恢復棉花採集作業...");
-      await delay(15, 開始賺棉花);
+      await delay(15, startCollectingCotton);
     }
   };
 
   await page.goto(棉棉摸彩箱區);
-  await 開始賺棉花();
+  await startCollectingCotton();
 
   // // Locate the full title with a unique string.
   // const textSelector = await page
