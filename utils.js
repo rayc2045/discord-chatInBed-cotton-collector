@@ -4,6 +4,10 @@ export function thousandFormat(num) {
   return parts.join(".");
 }
 
+export function diffSeconds(time1, time2) {
+  return Math.floor(Math.abs(time1 - time2) / 1000);
+}
+
 export function diffMinutes(time1, time2) {
   return Math.floor(Math.abs(time1 - time2) / 1000 / 60);
 }

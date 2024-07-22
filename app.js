@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer-core";
-import { thousandFormat, diffMinutes, delay } from "./utils.js";
+import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -30,7 +30,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     { text: "+整理衣櫃", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
     { text: "+歸納物品", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
   ];
-  for (const keyword of keywords) keyword.times = 0;
+  for (const keyword of keywords) keyword.times = keyword.lastTime = 0;
 
   const sendText = async (text) => {
     const selector = "form [data-slate-node]";
@@ -55,30 +55,25 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
   const startCollectingCotton = async () => {
     try {
-      let triggerTimesInMinute = 0;
-      const triggerDelay = 2;
+      const startTime = new Date();
 
       for (const keyword of keywords) {
         const { text, coolMinute, lastTime, area } = keyword;
-
-        if (lastTime && diffMinutes(lastTime, new Date()) < coolMinute + 5)
-          continue;
+        if (diffMinutes(lastTime, new Date()) < coolMinute + 5) continue;
 
         const href = await page.evaluate(() => location.href);
         if (href !== area) await page.goto(area);
 
         await sendText(text);
         keyword.times++;
-        keyword.lastTime = new Date();
-        triggerTimesInMinute++;
+        keyword.lastTime = new Date().setSeconds(0);
         updateLog();
-        await delay(triggerDelay);
+        await delay(2);
       }
 
-      await delay(
-        60 - triggerTimesInMinute * triggerDelay,
-        startCollectingCotton,
-      );
+      const endTime = new Date();
+      if (diffSeconds(startTime, endTime) >= 60) return startCollectingCotton();
+      await delay(60 - endTime.getSeconds(), startCollectingCotton);
     } catch (err) {
       console.clear();
       console.log(err);
