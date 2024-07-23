@@ -66,14 +66,18 @@ import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
 
         await sendText(text);
         keyword.times++;
-        keyword.lastTime = new Date().setSeconds(0);
+        keyword.lastTime = new Date();
+        keyword.lastTime.setSeconds(0, 0);
         updateLog();
         await delay(2);
       }
 
       const endTime = new Date();
-      if (diffSeconds(startTime, endTime) >= 60) return startCollectingCotton();
-      await delay(60 - endTime.getSeconds(), startCollectingCotton);
+      const nextMinute = new Date(startTime.getTime() + 60_000);
+      nextMinute.setSeconds(0, 0);
+      const delayTime = nextMinute - endTime;
+      if (delayTime > 0) await delay(delayTime / 1000);
+      startCollectingCotton();
     } catch (err) {
       console.clear();
       console.log(err);
