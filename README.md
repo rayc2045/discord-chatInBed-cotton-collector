@@ -8,7 +8,7 @@
 - MacOS
 - [Node.js](https://nodejs.org/en/download/)
 - [pnpm](https://pnpm.io/installation)
-- [Brave Browser](https://brave.com/download/)
+- Chromium-based browsers
 
 ### Usage
 
