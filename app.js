@@ -1,5 +1,5 @@
 import puppeteer from "puppeteer-core";
-import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
+import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -28,7 +28,6 @@ import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
     棉棉摸彩箱區 = 蓋棉被純聊天頻道 + "1151829793654980639";
 
   const keywords = [
-    { text: "!摸彩", number: 50, coolMinute: 25, area: 棉棉摸彩箱區 },
     { text: "+吸塵", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
     { text: "+拖地", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
     { text: "+點香氛", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
@@ -38,6 +37,7 @@ import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
     { text: "+換床單", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
     { text: "+整理衣櫃", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
     { text: "+歸納物品", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
+    { text: "!摸摸彩", number: 75, coolMinute: 120, area: 棉棉摸彩箱區 },
   ];
   for (const keyword of keywords) keyword.times = keyword.lastTime = 0;
 
@@ -64,21 +64,24 @@ import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
 
   const startCollectingCotton = async () => {
     try {
-      const startTime = new Date();
+      const startTime = new Date(),
+        unitsDigitOfMinute = String(startTime.getMinutes()).at(-1);
 
-      for (const keyword of keywords) {
-        const { text, coolMinute, lastTime, area } = keyword;
-        if (diffMinutes(lastTime, new Date()) < coolMinute + 5) continue;
+      if (unitsDigitOfMinute === "0" || unitsDigitOfMinute === "5") {
+        for (const keyword of keywords) {
+          const { text, coolMinute, lastTime, area } = keyword;
+          if (diffMinutes(lastTime, new Date()) < coolMinute + 5) continue;
 
-        const href = await page.evaluate(() => location.href);
-        if (href !== area) await page.goto(area);
+          const href = await page.evaluate(() => location.href);
+          if (href !== area) await page.goto(area);
 
-        await sendText(text);
-        keyword.times++;
-        keyword.lastTime = new Date();
-        keyword.lastTime.setSeconds(0, 0);
-        updateLog();
-        await delay(2);
+          await sendText(text);
+          keyword.times++;
+          keyword.lastTime = new Date();
+          keyword.lastTime.setSeconds(0, 0);
+          updateLog();
+          await delay(2);
+        }
       }
 
       const endTime = new Date();
@@ -95,7 +98,7 @@ import { thousandFormat, diffSeconds, diffMinutes, delay } from "./utils.js";
     }
   };
 
-  await page.goto(棉棉摸彩箱區);
+  await page.goto(keywords[0].area);
   await startCollectingCotton();
 
   // // Locate the full title with a unique string.
