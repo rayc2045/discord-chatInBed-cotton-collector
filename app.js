@@ -37,7 +37,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     { text: "+換床單", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
     { text: "+整理衣櫃", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
     { text: "+歸納物品", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
-    { text: "!摸摸彩", number: 75, coolMinute: 120, area: 棉棉摸彩箱區 },
+    { text: "!摸摸彩", number: 25, coolMinute: 120, area: 棉棉摸彩箱區 },
   ];
   for (const keyword of keywords) keyword.times = keyword.lastTime = 0;
 
