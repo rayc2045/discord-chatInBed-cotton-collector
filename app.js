@@ -77,9 +77,19 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
   const startCollectingCotton = async () => {
     try {
-      const startTime = new Date(),
-        unitsDigitOfMinute = String(startTime.getMinutes()).at(-1);
+      const startTime = new Date();
 
+      const currHour = startTime.getHours(),
+        lottery = keywords.find((keyword) => keyword.text.endsWith("摸彩"));
+      if (currHour < 8) {
+        lottery.revenu = 25;
+        lottery.coolMinute = 180;
+      } else {
+        lottery.revenu = 8.3;
+        lottery.coolMinute = 60;
+      }
+
+      const unitsDigitOfMinute = String(startTime.getMinutes()).at(-1);
       if (unitsDigitOfMinute === "0" || unitsDigitOfMinute === "5") {
         for (const keyword of keywords) {
           const { text, coolMinute, lastTime, area } = keyword;
