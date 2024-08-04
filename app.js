@@ -111,7 +111,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     }
   };
 
-  await page.goto(keywords[0].area);
+  await page.goto("https://discord.com/login");
   await startCollectingCotton();
 
   // // Locate the full title with a unique string.
@@ -119,8 +119,6 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
   //   .locator("text/Customize and automate")
   //   .waitHandle();
   // const fullTitle = await textSelector?.evaluate((el) => el.textContent);
-
-  // // Print the full title.
 
   // await browser.close();
 })();
