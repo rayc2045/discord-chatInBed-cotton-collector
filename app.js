@@ -24,22 +24,35 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     page = await browser.newPage();
 
   const 蓋棉被純聊天頻道 = "https://discord.com/channels/498209091773267968/",
-    勞動賺棉花區 = 蓋棉被純聊天頻道 + "909366297933000744",
-    棉棉摸彩箱區 = 蓋棉被純聊天頻道 + "1151829793654980639";
+    勞動賺棉花 = 蓋棉被純聊天頻道 + "909366297933000744",
+    棉棉摸彩箱 = 蓋棉被純聊天頻道 + "1151829793654980639",
+    棉棉夢工廠 = 蓋棉被純聊天頻道 + "1265665369826263172";
 
   const keywords = [
-    { text: "+吸塵", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
-    { text: "+拖地", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
-    { text: "+點香氛", number: 10, coolMinute: 30, area: 勞動賺棉花區 },
-    { text: "+擦桌面", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
-    { text: "+抹玻璃", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
-    { text: "+洗廁所", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
-    { text: "+換床單", number: 20, coolMinute: 60, area: 勞動賺棉花區 },
-    { text: "+整理衣櫃", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
-    { text: "+歸納物品", number: 30, coolMinute: 120, area: 勞動賺棉花區 },
-    { text: "!摸摸彩", number: 25, coolMinute: 90, area: 棉棉摸彩箱區 },
+    { text: "+吸塵", revenu: 10, coolMinute: 30, area: 勞動賺棉花 },
+    { text: "+拖地", revenu: 10, coolMinute: 30, area: 勞動賺棉花 },
+    { text: "+點香氛", revenu: 10, coolMinute: 30, area: 勞動賺棉花 },
+    { text: "+擦桌面", revenu: 20, coolMinute: 60, area: 勞動賺棉花 },
+    { text: "+抹玻璃", revenu: 20, coolMinute: 60, area: 勞動賺棉花 },
+    { text: "+洗廁所", revenu: 20, coolMinute: 60, area: 勞動賺棉花 },
+    { text: "+換床單", revenu: 20, coolMinute: 60, area: 勞動賺棉花 },
+    { text: "+整理衣櫃", revenu: 30, coolMinute: 120, area: 勞動賺棉花 },
+    { text: "+歸納物品", revenu: 30, coolMinute: 120, area: 勞動賺棉花 },
+    { text: "!摸摸彩", revenu: 8.3, coolMinute: 60, area: 棉棉摸彩箱 }, // ((200-50)/2 - 50) * 60 coolMinute/最長 3 小時冷卻時間
+    // { text: "!做美夢", revenu: 100, coolMinute: 720, area: 棉棉夢工廠 }, // (800-200+1500-500)/2 * 50/100 - 300
   ];
   for (const keyword of keywords) keyword.times = keyword.lastTime = 0;
+  /*
+              30 /  30min
+              80 /  60min
+              60 / 120min
+    [摸摸彩] -100 /  60min
+    ––––––––––––––––––––––––––––––––––
+    11.5 小時 => 30*23 + 80*11 + 60*5 - 100*11 => 770
+    12   小時 => 30*24 + 80*12 + 60*6 - 100*12 => 840
+
+    [做美夢] -800 / cooltime = 12hr = 720min
+  */
 
   const sendText = async (text) => {
     const selector = "form [data-slate-node]";
@@ -51,9 +64,9 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
   };
 
   const updateLog = () => {
-    const sum = keywords.reduce((acc, obj) => acc + obj.number * obj.times, 0),
+    const sum = keywords.reduce((acc, obj) => acc + obj.revenu * obj.times, 0),
       paragraph = [
-        `棉花採集作業中... (≈${thousandFormat(sum)})`,
+        `棉花採集作業中... (≈${thousandFormat(Math.round(sum))})`,
         ...keywords
           .filter((keyword) => keyword.times > 0)
           .map((keyword) => `• ${keyword.text.slice(1)} x ${keyword.times}`),
@@ -89,7 +102,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
       nextMinute.setSeconds(0, 0);
       const delayTime = nextMinute - endTime;
       if (delayTime > 0) await delay(delayTime / 1000);
-      startCollectingCotton();
+      await startCollectingCotton();
     } catch (err) {
       console.clear();
       console.log(err);
