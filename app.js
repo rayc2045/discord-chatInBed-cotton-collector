@@ -81,7 +81,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
       const currHour = startTime.getHours(),
         lottery = keywords.find((keyword) => keyword.text.endsWith("摸彩"));
-      if (currHour < 8) {
+      if (currHour >= 3 && currHour < 8) {
         lottery.revenu = 25;
         lottery.coolMinute = 180;
       } else {
