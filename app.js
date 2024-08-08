@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer-core";
+import fs from "node:fs";
 import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
 (async () => {
@@ -18,7 +19,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
       ignoreDefaultArgs: ["--enable-automation"],
       args: ["--incognito", "--window-size=1024,768"],
       defaultViewport: null,
-      headless: false,
+      headless: true,
       // devtools: true,
       // slowMo: 1200
     }),
@@ -123,7 +124,17 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
   };
 
   await page.goto("https://discord.com/login");
-  await delay(15);
+  await page.waitForSelector("form", { timeout: 0 });
+  const [email, password] = fs
+      .readFileSync("login.txt", "utf8")
+      .trim()
+      .split("\n"),
+    emailInput = await page.$("input[name='email']"),
+    passwordInput = await page.$("input[name='password']"),
+    loginButton = await page.$("button[type='submit']");
+  await emailInput.type(email.trim());
+  await passwordInput.type(password.trim());
+  await loginButton.click();
   await startCollectingCotton();
 
   // // Locate the full title with a unique string.
