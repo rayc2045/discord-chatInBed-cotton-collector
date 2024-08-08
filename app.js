@@ -123,6 +123,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
   };
 
   await page.goto("https://discord.com/login");
+  await delay(15);
   await startCollectingCotton();
 
   // // Locate the full title with a unique string.
