@@ -11,6 +11,7 @@
 - Chromium-based browser
 
 ### Usage
+Edit `login.txt` file, then
 
     pnpm i
     pnpm start
