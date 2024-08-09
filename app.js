@@ -93,22 +93,27 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
       const unitsDigitOfMinute = String(startTime.getMinutes()).at(-1);
       if (unitsDigitOfMinute === "0" || unitsDigitOfMinute === "5") {
-        for (const keyword of keywords) {
-          const { text, coolMinute, lastTime, area } = keyword;
+        for (let i = 0; i < keywords.length; i++) {
+          const { text, coolMinute, lastTime, area } = keywords[i];
           if (diffMinutes(lastTime, new Date()) < coolMinute + 5) continue;
 
           const href = await page.evaluate(() => location.href);
           if (href !== area) await page.goto(area);
 
           await sendText(text);
-          keyword.times++;
-          keyword.lastTime = new Date();
-          keyword.lastTime.setSeconds(0, 0);
+          keywords[i].times++;
+          if (i > 0 && coolMinute === keywords[i - 1].coolMinute)
+            keywords[i].lastTime = keywords[i - 1].lastTime;
+          else {
+            keywords[i].lastTime = new Date();
+            keywords[i].lastTime.setSeconds(0, 0);
+          }
           updateLog();
           await delay(2);
         }
       }
 
+      // 1 minute countdown
       const endTime = new Date();
       const nextMinute = new Date(startTime.getTime() + 60_000);
       nextMinute.setSeconds(0, 0);
@@ -123,6 +128,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
     }
   };
 
+  // login Discord
   await page.goto("https://discord.com/login");
   await page.waitForSelector("form", { timeout: 0 });
   const [email, password] = fs
