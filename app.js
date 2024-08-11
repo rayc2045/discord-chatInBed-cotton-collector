@@ -4,7 +4,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
 
 (async () => {
   const browser = await puppeteer.launch({
-      // executablePath: ""C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
       // executablePath: "/Applications/Firefox.app/Contents/MacOS/firefox",
       // executablePath: "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox",
       // product: "firefox",
@@ -124,7 +124,8 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
       console.clear();
       console.log(err);
       console.log("\n等待恢復棉花採集作業...");
-      await delay(15, startCollectingCotton);
+      await delay(15);
+      await startCollectingCotton();
     }
   };
 
