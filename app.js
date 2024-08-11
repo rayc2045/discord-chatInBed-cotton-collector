@@ -133,13 +133,14 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
   await page.waitForSelector("form", { timeout: 0 });
   const [email, password] = fs
       .readFileSync("login.txt", "utf8")
-      .trim()
-      .split("\n"),
+      .split("\n")
+      .map((text) => text.trim())
+      .filter((text) => text.length),
     emailInput = await page.$("input[name='email']"),
     passwordInput = await page.$("input[name='password']"),
     loginButton = await page.$("button[type='submit']");
-  await emailInput.type(email.trim());
-  await passwordInput.type(password.trim());
+  await emailInput.type(email);
+  await passwordInput.type(password);
   await loginButton.click();
   await startCollectingCotton();
 
