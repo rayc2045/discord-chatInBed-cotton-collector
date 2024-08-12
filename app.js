@@ -5,6 +5,7 @@ import { thousandFormat, diffMinutes, delay } from "./utils.js";
 (async () => {
   const browser = await puppeteer.launch({
       // executablePath: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      // executablePath: "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
       // executablePath: "/Applications/Firefox.app/Contents/MacOS/firefox",
       // executablePath: "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox",
       // product: "firefox",
